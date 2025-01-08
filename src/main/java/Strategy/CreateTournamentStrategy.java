@@ -17,7 +17,7 @@ public class CreateTournamentStrategy implements IButtonStrategy {
     }
 
     @Override
-    public void execute() {
+    public Boolean execute() {
         if (Validator.validateString(tournamentName, "Tournament Name")) {
             TournoiDAO tournoiDAO = FactoryDAO.getTournoiDAO();
             Tournoi newTournament = new Tournoi();
@@ -26,8 +26,8 @@ public class CreateTournamentStrategy implements IButtonStrategy {
             newTournament.setNumberMatch(0);
 
             tournoiDAO.add(newTournament);
-
-            JOptionPane.showMessageDialog(null, "Tournament created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            return true ; 
         }
+        return false ;
     }
 }

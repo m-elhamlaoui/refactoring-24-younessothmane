@@ -9,7 +9,7 @@ import Utils.AppContext;
 public class TournamentDetailsPanel extends JPanel {
     private final MainFrame frame;
     private final ResourceBundle messages;
-
+    
     public TournamentDetailsPanel(MainFrame frame, ResourceBundle messages) {
         this.frame = frame;
         this.messages = messages;
@@ -27,7 +27,7 @@ public class TournamentDetailsPanel extends JPanel {
         JPanel detailsPanel = new JPanel(new GridLayout(4, 2));
         detailsPanel.add(new JLabel(messages.getString("NOM_TOURN")));
         detailsPanel.add(new JLabel(AppContext.getCurrentTournament().getNom()));
-
+        System.out.println(AppContext.getCurrentTournament());
         detailsPanel.add(new JLabel(messages.getString("STATUT")));
         detailsPanel.add(new JLabel(String.valueOf(AppContext.getCurrentTournament().getStatus())));
 

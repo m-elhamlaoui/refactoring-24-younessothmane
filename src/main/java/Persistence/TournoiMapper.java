@@ -12,7 +12,8 @@ public class TournoiMapper implements IRowMapper<Tournoi> {
         t.setId(rs.getInt("id_tournoi"));
         t.setNom(rs.getString("nom_tournoi"));
         t.setNumberMatch(rs.getInt("nb_matchs"));
-        t.setStatus(rs.getInt("status"));
+        t.setStatus(rs.getInt("statut_"));
+
         
         return t;
     }

@@ -18,7 +18,7 @@ public class ValidateTeamsStrategy implements IButtonStrategy {
     }
 
     @Override
-    public void execute() {
+    public Boolean execute() {
         EquipeDAO equipeDAO = FactoryDAO.getEquipeDAO();
         List<Equipe> teams = equipeDAO.getByTournoi(tournamentId);
 
@@ -27,8 +27,10 @@ public class ValidateTeamsStrategy implements IButtonStrategy {
             matchDAO.insertMatchs(generateMatches(teams), tournamentId);
 
             JOptionPane.showMessageDialog(null, "Teams validated and matches generated!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            return true ;
         } else {
             JOptionPane.showMessageDialog(null, "Number of teams must be even!", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            return false ;
         }
     }
 

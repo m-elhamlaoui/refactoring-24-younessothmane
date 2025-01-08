@@ -20,7 +20,7 @@ public class AddTeamStrategy implements IButtonStrategy {
     }
 
     @Override
-    public void execute() {
+    public Boolean execute() {
         if (Validator.validateString(teamName1, "Team Member 1") && Validator.validateString(teamName2, "Team Member 2")) {
             EquipeDAO equipeDAO = FactoryDAO.getEquipeDAO();
             Equipe newTeam = new Equipe();
@@ -29,7 +29,9 @@ public class AddTeamStrategy implements IButtonStrategy {
             newTeam.setTournoi(tournamentId);
 
             equipeDAO.add(newTeam);
-            JOptionPane.showMessageDialog(null, "Team added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+           // JOptionPane.showMessageDialog(null, "Team added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+           return true ;
         }
+        return false ; 
     }
 }

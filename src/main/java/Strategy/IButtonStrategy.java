@@ -1,5 +1,5 @@
 package Strategy;
 
 public interface IButtonStrategy {
-    public void execute();
+    public Boolean execute(); // true -> no errors , false -> error
 }

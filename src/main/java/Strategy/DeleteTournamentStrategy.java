@@ -16,17 +16,19 @@ public class DeleteTournamentStrategy implements IButtonStrategy {
     }
 
     @Override
-    public void execute() {
+    public Boolean execute() {
         if (Validator.validateString(tournamentName, "Tournament Name")) {
             TournoiDAO tournoiDAO = FactoryDAO.getTournoiDAO();
+            
             Tournoi tournamentToDelete = tournoiDAO.getByName(tournamentName);
 
             if (tournamentToDelete != null) {
                 tournoiDAO.delete(tournamentToDelete.getId());
-                JOptionPane.showMessageDialog(null, "Tournament deleted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                return true ;
             } else {
-                JOptionPane.showMessageDialog(null, "Tournament not found!", "Error", JOptionPane.ERROR_MESSAGE);
+                return false ;
             }
         }
+        return false;
     }
 }

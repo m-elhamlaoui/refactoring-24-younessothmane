@@ -20,7 +20,7 @@ public class AddMatchScoresStrategy implements IButtonStrategy {
     }
 
     @Override
-    public void execute() {
+    public Boolean execute() {
         if (Validator.validatePositiveInteger(String.valueOf(score1), "Score 1") &&
             Validator.validatePositiveInteger(String.valueOf(score2), "Score 2")) {
 
@@ -32,6 +32,8 @@ public class AddMatchScoresStrategy implements IButtonStrategy {
             matchDAO.update(match);
 
             JOptionPane.showMessageDialog(null, "Scores updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            return true ;
         }
+        return false ;
     }
 }

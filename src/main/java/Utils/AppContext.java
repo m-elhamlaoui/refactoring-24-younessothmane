@@ -3,14 +3,19 @@ package Utils;
 import Models.Tournoi;
 
 public class AppContext {
-    public static String language = "en";
-    public static Tournoi currentTournament = new Tournoi(0, 0, language, 0);
+    public static String language ;
+    public static Tournoi currentTournament ;;
 
     public static String getLanguage() {
         return language;
     }
 
     public static void setLanguage(String language) {
+        if(language.equals("eng"))
+            AppContext.setCurrentTournament( new Tournoi(-1, 0, "No selected Tournament", 0));
+        else 
+            AppContext.setCurrentTournament( new Tournoi(-1, 0, "aucune tournois est choisi", 0));
+          
         AppContext.language = language;
     }    
 

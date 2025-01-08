@@ -17,7 +17,7 @@ public class TournoiDAO extends AbstractDAO<Tournoi> {
         }
 
         String query = String.format(
-                "INSERT INTO tournois (nb_matchs, nom_tournoi, statut) VALUES (%d, '%s', %d)",
+                "INSERT INTO tournois (nb_matchs, nom_tournoi, statut_ ) VALUES (%d, '%s', %d)",
                 obj.getNumberMatch(), obj.getNom(), obj.getStatus()
         );
 
@@ -58,7 +58,7 @@ public class TournoiDAO extends AbstractDAO<Tournoi> {
         }
 
         String query = String.format(
-                "UPDATE tournois SET nom_tournoi = '%s', statut = %d, nb_matchs = %d WHERE id_tournoi = %d",
+                "UPDATE tournois SET nom_tournoi = '%s', statut_ = %d, nb_matchs = %d WHERE id_tournoi = %d",
                 obj.getNom(), obj.getStatus(), obj.getNumberMatch(), obj.getId()
         );
 
@@ -66,6 +66,8 @@ public class TournoiDAO extends AbstractDAO<Tournoi> {
     }
 
     public Tournoi getByName(String tournoiName) {
+
+
         String query = String.format("SELECT * FROM tournois WHERE nom_tournoi = '%s'", tournoiName);
         List<Tournoi> result = jdbcTemplate.Query(query, new TournoiMapper());
         return result.isEmpty() ? null : result.get(0);

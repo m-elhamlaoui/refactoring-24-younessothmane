@@ -22,17 +22,20 @@ public class SelectTournamentStrategy implements IButtonStrategy {
     }
 
     @Override
-    public void execute() {
+    public Boolean execute() {
         if (Validator.validateString(tournamentName, "Tournament Name")) {
             TournoiDAO tournoiDAO = FactoryDAO.getTournoiDAO();
             Tournoi selectedTournament = tournoiDAO.getByName(tournamentName);
 
             if (selectedTournament != null) {
                 AppContext.setCurrentTournament(selectedTournament);
+                System.out.println(selectedTournament);
                 frame.navigateTo("TOURNAMENT_DETAILS");
+                return true ;
             } else {
-                JOptionPane.showMessageDialog(null, "Tournament not found!", "Error", JOptionPane.ERROR_MESSAGE);
+                return false  ; 
             }
         }
+        return false ; 
     }
 }
