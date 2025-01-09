@@ -109,7 +109,7 @@ public class MainFrame extends JFrame {
         mainPanel.add(createStyledPanel(new ResultManagementPanel(this, messages)), "RESULT_MANAGEMENT");
         
         // Add the RoundPanel
-        mainPanel.add(createStyledPanel(new RoundPanel(1)), "ROUND_MANAGEMENT");  // Assuming tournoiId is 1 for this example
+        mainPanel.add(createStyledPanel(new RoundManagementPanel(this, messages)), "ROUND_MANAGEMENT");  // Assuming tournoiId is 1 for this example
     }
 
     private JPanel createStyledPanel(JPanel panel) {

@@ -6,6 +6,7 @@ import DAOs.MatchDAO;
 import DAOs.TournoiDAO;
 import Models.Equipe;
 import Models.Match;
+import Models.Tournoi;
 import Utils.AppContext;
 
 import javax.swing.JOptionPane;
@@ -24,9 +25,13 @@ public class ValidateTeamsStrategy implements IButtonStrategy {
         EquipeDAO equipeDAO = FactoryDAO.getEquipeDAO();
         List<Equipe> teams = equipeDAO.getByTournoi(tournamentId);
         int numTeams = teams.size();
+    
         if (teams.size()!=0 && teams.size() % 2 == 0) {
             MatchDAO matchDAO = FactoryDAO.getMatchDAO();
-            matchDAO.insertMatchs(generateMatches(teams), tournamentId);
+            Tournoi currTournoi = AppContext.getCurrentTournament();
+            int round = currTournoi.getNumberMatch() / (numTeams / 2); 
+            round ++; 
+            matchDAO.insertMatchs(generateMatches(teams,round), tournamentId,round);
             
             AppContext.getCurrentTournament().setStatus(1);
             AppContext.getCurrentTournament().setNumberMatch((numTeams-1)*(numTeams/2));
@@ -43,51 +48,40 @@ public class ValidateTeamsStrategy implements IButtonStrategy {
         }
     }
 
-    private Vector<Vector<Match>> generateMatches(List<Equipe> teams) {
-        Vector<Vector<Match>> matchRounds = new Vector<>();
+    
+    private Vector<Match> generateMatches(List<Equipe> teams,int round) {
         int numTeams = teams.size();
-        
-        for (int round = 0; round < numTeams - 1; round++) {
-            Vector<Match> roundMatches = new Vector<>();
-            
-            // Generate matches for this round
-            for (int j = 0; j < numTeams / 2; j++) {
-                Match match = new Match();
-                
-                // Set teams
-                match.setTournoi(AppContext.getCurrentTournament().getId());
-                match.setEq1(teams.get(j).getId());
-                match.setEq2(teams.get(numTeams - j - 1).getId());
-                
-                // Set round number (1-based indexing for display purposes)
-                match.setNumTour(round + 1);
-                
-                // Initialize other match properties
-                match.setScore1(0);
-                match.setScore2(0);
-                match.setTermine(false);
-                
-                roundMatches.add(match);
+        Tournoi currTournoi = AppContext.getCurrentTournament();
 
-             System.out.println(match.getNumTour());
-            }
+        Vector<Match> roundMatches = new Vector<>();
+
+        for (int j = 0; j < numTeams / 2; j++) {
+            Match match = new Match();
             
-            matchRounds.add(roundMatches);
+            // Set teams
+            match.setTournoi(AppContext.getCurrentTournament().getId());
+            match.setEq1(teams.get(j).getId());
+            match.setEq2(teams.get(numTeams - j - 1).getId());
             
-            // Rotate teams: fix first team and rotate others
-            Equipe lastTeam = teams.get(numTeams - 1);
-            teams.remove(numTeams - 1);
-            teams.add(1, lastTeam); 
+            // Set round number (1-based indexing for display purposes)
+            match.setNumTour(round + 1);
+            
+            // Initialize other match properties
+            match.setScore1(0);
+            match.setScore2(0);
+            match.setTermine(false);
+            
+            roundMatches.add(match);
+
+            System.out.println(match.getNumTour());
         }
 
-   
+        currTournoi.setNumberMatch(currTournoi.getNumberMatch()+numTeams/2);
+        return roundMatches;
+
+        }
+
         
-         return matchRounds;
-    }
-    public Vector<Vector<Match>> getSchedule(){
-        EquipeDAO equipeDAO = FactoryDAO.getEquipeDAO();
-        List<Equipe> teams = equipeDAO.getByTournoi(tournamentId);
-        return this.generateMatches(teams);
-    }
+
 
 }

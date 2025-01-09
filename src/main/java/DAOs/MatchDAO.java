@@ -32,14 +32,14 @@ public class MatchDAO extends AbstractDAO<Match> {
         jdbcTemplate.Query(query);
     }
 
-    public void insertMatchs(Vector<Vector<Match>> matchSets, int id_tournoi) {
-      for (int roundNumber = 1; roundNumber <= matchSets.size(); roundNumber++) {
-          for (Match match : matchSets.get(roundNumber - 1)) {
-            
-              add(new Match(0, id_tournoi,  match.getEq1(), match.getEq2(), 0,0, roundNumber, false));
-          }
-      }
-  }
+    public void insertMatchs(Vector<Match> roundMatches, int id_tournoi, int roundNumber) {
+    
+
+        for (Match match : roundMatches) {
+            add(new Match(0, id_tournoi, match.getEq1(), match.getEq2(), 0, 0, roundNumber, false));
+        }
+    }
+    
 
     @Override
     public Match getOne(int id) {
@@ -60,7 +60,16 @@ public class MatchDAO extends AbstractDAO<Match> {
             System.out.println("Cannot update a null match");
             return;
         }
-
+        System.out.println(    
+            match.getTournoi() +" "+
+            match.getNumTour()+" "+
+            match.getEq1()+" "+
+            match.getEq2()+" "+
+            match.getScore1()+" "+
+            match.getScore2()+" "+
+            (match.isTermine() ? 1 : 0)+" "+
+            match.getMatch()+" "
+        );
         String query = String.format(
                 "UPDATE matchs SET id_tournoi = %d, num_tour = %d, equipe1 = %d, equipe2 = %d, score1 = %d, score2 = %d, termine = %d " +
                         "WHERE id_match = %d",
