@@ -9,6 +9,7 @@ C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-2
 C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Models\Equipe.java
 C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Models\Match.java
 C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Models\Tournoi.java
+C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Observer\Observer.java
 C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Persistence\Connector.java
 C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Persistence\EquipeMapper.java
 C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Persistence\IRowMapper.java
@@ -22,11 +23,6 @@ C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-2
 C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Strategy\IButtonStrategy.java
 C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Strategy\SelectTournamentStrategy.java
 C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Strategy\ValidateTeamsStrategy.java
-C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Utils\AppContext.java
-C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Utils\DateFormatter.java
-C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Utils\LanguageSelector.java
-C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Utils\ResourceLoader.java
-C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Utils\Validator.java
 C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Views\MainFrame.java
 C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Views\MatchManagementPanel.java
 C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Views\ResultManagementPanel.java
@@ -34,3 +30,8 @@ C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-2
 C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Views\TeamManagementPanel.java
 C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Views\TournamentDetailsPanel.java
 C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Views\TournamentSelectionPanel.java
+C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Views\Utils\AppContext.java
+C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Views\Utils\DateFormatter.java
+C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Views\Utils\LanguageSelector.java
+C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Views\Utils\ResourceLoader.java
+C:\Users\youne\OneDrive\Desktop\UM6P-CS\CI\S1\Software Engineering\refactoring-24-younessothmane\src\main\java\Views\Utils\Validator.java
