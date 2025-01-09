@@ -2,6 +2,7 @@ package DAOs;
 
 import Persistence.TournoiMapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -85,6 +86,55 @@ public class TournoiDAO extends AbstractDAO<Tournoi> {
         return result.isEmpty() || result.get(0) == null ? 0 : result.get(0);
     }
 
+    public int getTotalMatchesForTournament(int tournoiId) {
+        String query = String.format("SELECT COUNT(*) FROM matchs WHERE id_tournoi = %d", tournoiId);
+        List<Integer> result = jdbcTemplate.Query(query, (rs, rowNum) -> rs.getInt(1));
+        return result.isEmpty() ? 0 : result.get(0);
+    }
+
+    // Method to calculate the number of played matches in a tournament
+    public int getPlayedMatchesForTournament(int tournoiId) {
+        String query = String.format("SELECT COUNT(*) FROM matchs WHERE id_tournoi = %d AND termine = 1", tournoiId);
+        List<Integer> result = jdbcTemplate.Query(query, (rs, rowNum) -> rs.getInt(1));
+        return result.isEmpty() ? 0 : result.get(0);
+    }
+
+public List<int[]> getRoundData(int tournoiId) {
+    String query = String.format("SELECT num_tour, COUNT(*) AS total_matches, SUM(CASE WHEN termine = 1 THEN 1 ELSE 0 END) AS played_games FROM matchs WHERE id_tournoi = %d GROUP BY num_tour", tournoiId);
+
+    // Use a List to hold the round data as int arrays
+    List<int[]> roundDataList = new ArrayList<>();
+
+    // Execute the query and populate the list with int arrays
+    List<Object[]> result = jdbcTemplate.Query(query, (rs, rowNum) -> new Object[] {
+        rs.getInt("num_tour"),
+        rs.getInt("total_matches"),
+        rs.getInt("played_games")
+    });
+
+    // Convert the result into a List<int[]> where each entry is an array of ints
+    for (Object[] row : result) {
+        int[] roundData = new int[3];  // Array to store round data (round number, total matches, played games)
+        roundData[0] = (int) row[0];   // Round number
+        roundData[1] = (int) row[1];   // Total matches
+        roundData[2] = (int) row[2];   // Played games
+        roundDataList.add(roundData);
+    }
+
+    return roundDataList;
+}
+
+    public boolean isAllMatchesPlayed(int tournoiId) {
+        int totalMatches = getTotalMatchesForTournament(tournoiId);
+        int playedMatches = getPlayedMatchesForTournament(tournoiId);
+        
+        // Check if there are any matches in the tournament
+        if (totalMatches == 0) {
+            return false;
+        }
+        
+        return totalMatches == playedMatches;
+    }
 
     
 }

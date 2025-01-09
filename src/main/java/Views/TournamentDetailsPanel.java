@@ -1,51 +1,90 @@
 package Views;
 
 import javax.swing.*;
+
+import Models.Tournoi;
+import Observer.IObserver;
+
 import java.awt.*;
 import java.util.ResourceBundle;
-
 import Utils.AppContext;
 
-public class TournamentDetailsPanel extends JPanel {
+public class TournamentDetailsPanel extends JPanel implements IObserver {
+
     private final MainFrame frame;
     private final ResourceBundle messages;
-    
+    private JLabel nameLabel;
+    private JLabel statusLabel;
+    private JLabel matchCountLabel;
+
     public TournamentDetailsPanel(MainFrame frame, ResourceBundle messages) {
         this.frame = frame;
         this.messages = messages;
         initializeUI();
+        
+        AppContext.addObserver(this);  // Register as an observer
     }
 
     private void initializeUI() {
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(10, 10));
+        setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        // Header
-        JLabel header = new JLabel(messages.getString("DETAIL_TOUR"), JLabel.CENTER);
-        add(header, BorderLayout.NORTH);
+        add(createHeader(), BorderLayout.NORTH);
+        add(createDetailsPanel(), BorderLayout.CENTER);
+        add(createButtonPanel(), BorderLayout.SOUTH);
 
-        // Tournament details
-        JPanel detailsPanel = new JPanel(new GridLayout(4, 2));
-        detailsPanel.add(new JLabel(messages.getString("NOM_TOURN")));
-        detailsPanel.add(new JLabel(AppContext.getCurrentTournament().getNom()));
-        System.out.println(AppContext.getCurrentTournament());
-        detailsPanel.add(new JLabel(messages.getString("STATUT")));
-        detailsPanel.add(new JLabel(String.valueOf(AppContext.getCurrentTournament().getStatus())));
+        update();  // Initial update
+    }
 
-        detailsPanel.add(new JLabel(messages.getString("NB_MATCH")));
-        detailsPanel.add(new JLabel(String.valueOf(AppContext.getCurrentTournament().getNumberMatch())));
+    private JLabel createHeader() {
+        JLabel header = new JLabel("Tournament Details", JLabel.CENTER);
+        header.setFont(header.getFont().deriveFont(Font.BOLD, 16));
+        return header;
+    }
 
-        add(detailsPanel, BorderLayout.CENTER);
+    private JPanel createDetailsPanel() {
+        JPanel detailsPanel = new JPanel(new GridLayout(3, 2, 5, 5));
+        detailsPanel.setBorder(BorderFactory.createTitledBorder("Tournament Details"));
 
-        // Navigation buttons
-        JPanel buttonPanel = new JPanel();
-        JButton backButton = new JButton(messages.getString("TOURNOI_LIST"));
-        backButton.addActionListener(e -> frame.navigateTo("TOURNAMENT_SELECTION"));
+        detailsPanel.add(new JLabel("Name"));
+        nameLabel = new JLabel();
+        detailsPanel.add(nameLabel);
 
-        JButton manageTeamsButton = new JButton(messages.getString("EQUIPES"));
-        manageTeamsButton.addActionListener(e -> frame.navigateTo("TEAM_MANAGEMENT"));
+        detailsPanel.add(new JLabel("Status"));
+        statusLabel = new JLabel();
+        detailsPanel.add(statusLabel);
+
+        detailsPanel.add(new JLabel("Number of matches"));
+        matchCountLabel = new JLabel();
+        detailsPanel.add(matchCountLabel);
+
+        return detailsPanel;
+    }
+
+    private JPanel createButtonPanel() {
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+
+        JButton backButton = createNavigationButton(messages.getString("TOURNOI_LIST"), "TOURNAMENT_SELECTION");
+        JButton manageTeamsButton = createNavigationButton(messages.getString("EQUIPES"), "TEAM_MANAGEMENT");
 
         buttonPanel.add(backButton);
         buttonPanel.add(manageTeamsButton);
-        add(buttonPanel, BorderLayout.SOUTH);
+
+        return buttonPanel;
+    }
+
+    private JButton createNavigationButton(String text, String navigationTarget) {
+        JButton button = new JButton(text);
+        button.addActionListener(e -> frame.navigateTo(navigationTarget));
+        button.setPreferredSize(new Dimension(150, 30));
+        return button;
+    }
+
+    @Override
+    public void update() {
+        Tournoi currentTournament = AppContext.getCurrentTournament();
+        nameLabel.setText(currentTournament.getNom());
+        statusLabel.setText(String.valueOf(currentTournament.getStatutName()));
+        matchCountLabel.setText(String.valueOf(currentTournament.getNumberMatch()));
     }
 }

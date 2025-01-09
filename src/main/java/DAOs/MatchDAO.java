@@ -35,7 +35,8 @@ public class MatchDAO extends AbstractDAO<Match> {
     public void insertMatchs(Vector<Vector<Match>> matchSets, int id_tournoi) {
       for (int roundNumber = 1; roundNumber <= matchSets.size(); roundNumber++) {
           for (Match match : matchSets.get(roundNumber - 1)) {
-              add(new Match(0, id_tournoi, roundNumber, match.getEq1(), match.getEq2(), 0, 0, false));
+            
+              add(new Match(0, id_tournoi,  match.getEq1(), match.getEq2(), 0,0, roundNumber, false));
           }
       }
   }

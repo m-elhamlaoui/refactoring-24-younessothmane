@@ -3,6 +3,8 @@ package DAOs;
 import Persistence.EquipeMapper;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 import Models.Equipe;
 
@@ -77,5 +79,29 @@ public class EquipeDAO extends AbstractDAO<Equipe> {
             idTournoi, idTournoi
         );
         return jdbcTemplate.Query(query, (rs, rowNum) -> rs.getInt(1));
+    }
+
+    public Vector<Integer> getTeamsNumbersByMatch(int matchId) {
+        String query = String.format(
+            "SELECT e.* " +
+            "FROM matchs m " +
+            "JOIN equipes e ON e.id_equipe = m.equipe1 OR e.id_equipe = m.equipe2 " +
+            "WHERE m.id_match = %d " +
+            "ORDER BY CASE " +
+            "    WHEN e.id_equipe = m.equipe1 THEN 1 " +
+            "    WHEN e.id_equipe = m.equipe2 THEN 2 " +
+            "END"
+        ,matchId
+        );
+        
+    
+        List<Equipe> teams = jdbcTemplate.Query(query, new EquipeMapper());
+        
+        Vector<Integer> teamNumbers = new Vector<>();
+        for (Equipe team : teams) {
+            teamNumbers.add(team.getNumber());
+        }
+        
+        return teamNumbers;
     }
 }

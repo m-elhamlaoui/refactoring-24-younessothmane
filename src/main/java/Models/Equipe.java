@@ -59,7 +59,9 @@ public class Equipe {
     public void setJoueur2(String j2) {
         this.joueur2 = j2;
     }
-
+    public String getPlayers(){
+        return joueur1+','+joueur2;
+    }
     @Override
     public String toString() {
         return "Equipe[" +

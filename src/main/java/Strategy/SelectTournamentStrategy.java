@@ -26,7 +26,7 @@ public class SelectTournamentStrategy implements IButtonStrategy {
         if (Validator.validateString(tournamentName, "Tournament Name")) {
             TournoiDAO tournoiDAO = FactoryDAO.getTournoiDAO();
             Tournoi selectedTournament = tournoiDAO.getByName(tournamentName);
-
+            
             if (selectedTournament != null) {
                 AppContext.setCurrentTournament(selectedTournament);
                 System.out.println(selectedTournament);

@@ -2,14 +2,17 @@ package Views;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
 import DAOs.FactoryDAO;
 import DAOs.TournoiDAO;
 import Strategy.*;
+import Utils.AppContext;
+import Observer.IObserver; // Import the IObserver interface
 
-public class TournamentSelectionPanel extends JPanel {
+public class TournamentSelectionPanel extends JPanel implements IObserver {  // Implement IObserver
     private final MainFrame frame;
     private final ResourceBundle messages;
     private JList<String> tournamentList;
@@ -21,6 +24,9 @@ public class TournamentSelectionPanel extends JPanel {
         this.messages = messages;
         initializeUI();
         refreshTournamentList();
+        
+        // Register this panel as an observer
+        AppContext.addObserver(this);
     }
 
     private void initializeUI() {
@@ -104,7 +110,6 @@ public class TournamentSelectionPanel extends JPanel {
             Boolean ok = new CreateTournamentStrategy(tournamentName).execute();
             if(ok) {
                 refreshTournamentList();
-                showSuccessMessage(getLocalizedString("TOURNAMENT_DELETED_SUCCESS"));
 
             } else  {
                 showErrorMessage(getLocalizedString("TOURNAMENT_CREATION_ERROR"));
@@ -172,7 +177,11 @@ public class TournamentSelectionPanel extends JPanel {
         deleteButton.setEnabled(hasSelection);
     }
 
-
+    // IObserver interface method implementation
+    @Override
+    public void update() {
+        refreshTournamentList();  // Refresh the tournament list when notified of changes
+    }
 
     private String getLocalizedString(String key) {
         try {

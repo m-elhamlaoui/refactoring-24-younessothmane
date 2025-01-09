@@ -5,6 +5,8 @@ import Models.Equipe;
 import DAOs.FactoryDAO;
 import Utils.Validator;
 
+import java.util.List;
+
 import javax.swing.JOptionPane;
 
 
@@ -27,8 +29,23 @@ public class AddTeamStrategy implements IButtonStrategy {
             newTeam.setJoueur1(teamName1);
             newTeam.setJoueur2(teamName2);
             newTeam.setTournoi(tournamentId);
+            List<Equipe> teams = equipeDAO.getByTournoi(tournamentId);
 
+            // Calculate next team number safely
+            int nextNumber;
+            if (teams.isEmpty()) {
+                nextNumber = 1;
+            } else {
+                // Find the highest existing team number and add 1
+                nextNumber = teams.stream()
+                    .mapToInt(Equipe::getNumber)
+                    .max()
+                    .orElse(0) + 1;
+            }
+            newTeam.setNumber(nextNumber);
+    
             equipeDAO.add(newTeam);
+            System.out.println(newTeam);
            // JOptionPane.showMessageDialog(null, "Team added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
            return true ;
         }

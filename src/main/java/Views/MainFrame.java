@@ -30,7 +30,7 @@ public class MainFrame extends JFrame {
 
     public MainFrame() {
         setTitle("Tournament Manager");
-        setSize(800, 400);
+        setSize(1000, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -68,8 +68,8 @@ public class MainFrame extends JFrame {
         nav.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         
         String[] buttonLabels = {
-            "TOURNAMENT_SELECTION", "TOURNAMENT_DETAILS", "TEAM_MANAGEMENT",
-            "MATCH_MANAGEMENT", "RESULT_MANAGEMENT", "ROUND_MANAGEMENT"
+            "TOURNAMENT_SELECTION", "TOURNAMENT_DETAILS", "TEAM_MANAGEMENT", "ROUND_MANAGEMENT",
+            "MATCH_MANAGEMENT", "RESULT_MANAGEMENT"
         };
 
         for (String label : buttonLabels) {
@@ -107,7 +107,9 @@ public class MainFrame extends JFrame {
         mainPanel.add(createStyledPanel(new TeamManagementPanel(this, messages)), "TEAM_MANAGEMENT");
         mainPanel.add(createStyledPanel(new MatchManagementPanel(this, messages)), "MATCH_MANAGEMENT");
         mainPanel.add(createStyledPanel(new ResultManagementPanel(this, messages)), "RESULT_MANAGEMENT");
-        mainPanel.add(createStyledPanel(new RoundManagementPanel(this, messages)), "ROUND_MANAGEMENT");
+        
+        // Add the RoundPanel
+        mainPanel.add(createStyledPanel(new RoundPanel(1)), "ROUND_MANAGEMENT");  // Assuming tournoiId is 1 for this example
     }
 
     private JPanel createStyledPanel(JPanel panel) {
