@@ -5,6 +5,7 @@ import Persistence.TournoiMapper;
 import Utils.AppContext;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
@@ -13,6 +14,7 @@ import Models.Match;
 import Models.Tournoi;
 
 public class TournoiDAO extends AbstractDAO<Tournoi> {
+
 
     @Override
     public void add(Tournoi obj) {
@@ -161,37 +163,76 @@ public class TournoiDAO extends AbstractDAO<Tournoi> {
         return this.getEquipesFromTournoi(trnId).length;
     }
 
-    public void ajouterTour(int id) {
-        List<Equipe> teams = this.getEquipes(id);
-        int numTeams = teams.size();
+    public void ajouterTour(int id, int round){
+        if(round ==0 ) return;
+        EquipeDAO equipeDao = FactoryDAO.getEquipeDAO() ; 
+        List<Equipe> teams = equipeDao.getByTournoi(id);
+    
+        MatchDAO matchDAO =  FactoryDAO.getMatchDAO();
+        Vector<Match> matchs = generateMatches(teams).get(round-1);
+        for (Match m: matchs)
+            matchDAO.add(m);
         Tournoi currTournoi = AppContext.getCurrentTournament();
+        if(round ==1)
+            currTournoi.setStatus(1);
 
-        Vector<Match> roundMatches = new Vector<>();
-        int round = currTournoi.getNumberMatch() / (numTeams / 2); 
-        round ++; 
-        for (int j = 0; j < numTeams / 2; j++) {
-            Match match = new Match();
-            
-            // Set teams
-            match.setTournoi(AppContext.getCurrentTournament().getId());
-            match.setEq1(teams.get(j).getId());
-            match.setEq2(teams.get(numTeams - j - 1).getId());
-            
-            // Set round number (1-based indexing for display purposes)
-            match.setNumTour(round + 1);
-            
-            // Initialize other match properties
-            match.setScore1(0);
-            match.setScore2(0);
-            match.setTermine(false);
-            
-            roundMatches.add(match);
+        currTournoi.setNumberMatch(currTournoi.getNumberMatch()+ matchs.size());
 
-            System.out.println(match.getNumTour());
-        }
-
-        currTournoi.setNumberMatch(currTournoi.getNumberMatch()+numTeams/2);
+        this.update(currTournoi);
+        System.out.println("=======");
+        System.out.println("Updated tournament : "+currTournoi);
+        System.out.println("generated matches for round  "+round);
+        for( Match m : matchs)
+            System.out.println(m);
+        System.out.println("=======");
+    
+    }
 
         
+public Vector<Vector<Match>> generateMatches(List<Equipe> teams) {
+    Vector<Vector<Match>> matchRounds = new Vector<>();
+    int numTeams = teams.size();
+
+    // Create a list of indices to rotate (excluding the first team)
+    List<Integer> indices = new ArrayList<>();
+    for (int i = 1; i < numTeams; i++) {
+        indices.add(i);
     }
+
+    for (int round = 0; round < numTeams - 1; round++) {
+        Vector<Match> roundMatches = new Vector<>();
+
+        // First match involves the first team and a rotated team
+        Match firstMatch = new Match();
+        firstMatch.setTournoi(AppContext.getCurrentTournament().getId());
+        firstMatch.setEq1(teams.get(0).getId());
+        firstMatch.setEq2(teams.get(indices.get(0)).getId());
+        firstMatch.setNumTour(round + 1);
+        firstMatch.setScore1(-1);
+        firstMatch.setScore2(-1);
+        firstMatch.setTermine(false);
+        roundMatches.add(firstMatch);
+
+        // Generate remaining matches for this round
+        for (int j = 1; j < numTeams / 2; j++) {
+            Match match = new Match();
+            match.setTournoi(AppContext.getCurrentTournament().getId());
+            match.setEq1(teams.get(indices.get(j)).getId());
+            match.setEq2(teams.get(indices.get(numTeams - j - 1)).getId());
+            match.setNumTour(round + 1);
+            match.setScore1(-1);
+            match.setScore2(-1);
+            match.setTermine(false);
+            roundMatches.add(match);
+        }
+
+        matchRounds.add(roundMatches);
+
+        // Rotate the indices for the next round (fixed start, rotating rest)
+        Collections.rotate(indices, -1);
+    }
+
+    return matchRounds;
+}
+
 }

@@ -60,16 +60,7 @@ public class MatchDAO extends AbstractDAO<Match> {
             System.out.println("Cannot update a null match");
             return;
         }
-        System.out.println(    
-            match.getTournoi() +" "+
-            match.getNumTour()+" "+
-            match.getEq1()+" "+
-            match.getEq2()+" "+
-            match.getScore1()+" "+
-            match.getScore2()+" "+
-            (match.isTermine() ? 1 : 0)+" "+
-            match.getMatch()+" "
-        );
+
         String query = String.format(
                 "UPDATE matchs SET id_tournoi = %d, num_tour = %d, equipe1 = %d, equipe2 = %d, score1 = %d, score2 = %d, termine = %d " +
                         "WHERE id_match = %d",
@@ -127,5 +118,16 @@ public class MatchDAO extends AbstractDAO<Match> {
     
     public void deleteByTourAndTournament(int idTournoi, int nbtoursav) {
         jdbcTemplate.Query(String.format("DELETE FROM matchs WHERE id_tournoi = %d AND num_tour = %d", idTournoi, nbtoursav));
+    }
+    public List<Match> getMatchesByRound(int tournoiId, int round) {
+        String query = String.format(
+            "SELECT * FROM matchs " +
+            "WHERE id_tournoi = %d AND num_tour = %d " +
+            "ORDER BY id_match",
+            tournoiId, round
+        );
+    
+        List<Match> matches = jdbcTemplate.Query(query, new MatchMapper());
+        return matches;
     }
 }

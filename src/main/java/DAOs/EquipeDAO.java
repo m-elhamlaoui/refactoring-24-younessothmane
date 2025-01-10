@@ -1,12 +1,14 @@
 package DAOs;
 
 import Persistence.EquipeMapper;
+import Persistence.MatchMapper;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
 import Models.Equipe;
+import Models.Match;
 
 public class EquipeDAO extends AbstractDAO<Equipe> {
 
@@ -104,4 +106,7 @@ public class EquipeDAO extends AbstractDAO<Equipe> {
         
         return teamNumbers;
     }
+
+
+    
 }

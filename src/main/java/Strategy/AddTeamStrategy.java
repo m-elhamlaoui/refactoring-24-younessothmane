@@ -45,7 +45,6 @@ public class AddTeamStrategy implements IButtonStrategy {
             newTeam.setNumber(nextNumber);
     
             equipeDAO.add(newTeam);
-            System.out.println(newTeam);
            // JOptionPane.showMessageDialog(null, "Team added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
            return true ;
         }

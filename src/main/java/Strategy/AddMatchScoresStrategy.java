@@ -5,6 +5,8 @@ import DAOs.MatchDAO;
 import Models.Match;
 
 import javax.swing.JOptionPane;
+
+import Utils.AppContext;
 import Utils.Validator;
 
 
@@ -28,8 +30,10 @@ public class AddMatchScoresStrategy implements IButtonStrategy {
             match.setScore2(score2);
             match.setTermine(true);
 
+
             MatchDAO matchDAO = FactoryDAO.getMatchDAO();
             matchDAO.update(match);
+            AppContext.notifyObservers(); 
 
             JOptionPane.showMessageDialog(null, "Scores updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
             return true ;

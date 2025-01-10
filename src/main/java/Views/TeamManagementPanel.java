@@ -1,6 +1,7 @@
 package Views;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -14,9 +15,9 @@ import Strategy.*;
 public class TeamManagementPanel extends JPanel implements IObserver {
     private final MainFrame frame;
     private final ResourceBundle messages;
-    private JList<String> teamList;
+    private JTable teamTable;
 
-    private JButton addTeamButton; // Declare instance variables for the buttons
+    private JButton addTeamButton; 
     private JButton validateTeamsButton;
 
     public TeamManagementPanel(MainFrame frame, ResourceBundle messages) {
@@ -32,37 +33,58 @@ public class TeamManagementPanel extends JPanel implements IObserver {
         setLayout(new BorderLayout(10, 10));
 
         add(createHeaderPanel(), BorderLayout.NORTH);
-        add(createTeamListPanel(), BorderLayout.CENTER);
+        add(createTeamTablePanel(), BorderLayout.CENTER);
         add(createButtonPanel(), BorderLayout.SOUTH);
+
+        // Initial button states
         addTeamButton.setEnabled(false);
         validateTeamsButton.setEnabled(false);
+
+        // Refresh team list initially
         this.refreshTeamList();
     }
 
     private JPanel createHeaderPanel() {
         JLabel header = new JLabel(messages.getString("EQUIPES"), JLabel.CENTER);
-        header.setFont(header.getFont().deriveFont(Font.BOLD, 16));
+        header.setFont(header.getFont().deriveFont(Font.BOLD, 18));
         header.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        header.setForeground(new Color(50, 50, 50));
 
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.add(header, BorderLayout.CENTER);
         return headerPanel;
     }
 
-    private JScrollPane createTeamListPanel() {
-        teamList = new JList<>(getTeamNames());
-        teamList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    private JScrollPane createTeamTablePanel() {
+        String[] columns = {"Team Number", "Player 1", "Player 2"};
+        DefaultTableModel model = new DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Disable editing
+            }
+        };
+        teamTable = new JTable(model);
+        teamTable.setFillsViewportHeight(true);
+        teamTable.setRowHeight(30);
+        teamTable.setFont(new Font("Arial", Font.PLAIN, 14));
+        teamTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        teamTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 16));
+        teamTable.getTableHeader().setBackground(new Color(220, 220, 220));
 
-        JScrollPane scrollPane = new JScrollPane(teamList);
-        scrollPane.setPreferredSize(new Dimension(300, 200));
+        JScrollPane scrollPane = new JScrollPane(teamTable);
+        scrollPane.setPreferredSize(new Dimension(400, 250));
         return scrollPane;
     }
 
     private JPanel createButtonPanel() {
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
 
         addTeamButton = new JButton(messages.getString("AJ_EQ"));
         validateTeamsButton = new JButton(messages.getString("VAL_EQ"));
+
+        // Style buttons
+        styleButton(addTeamButton);
+        styleButton(validateTeamsButton);
 
         addTeamButton.addActionListener(e -> handleAddTeam());
         validateTeamsButton.addActionListener(e -> handleValidateTeams());
@@ -70,6 +92,26 @@ public class TeamManagementPanel extends JPanel implements IObserver {
         buttonPanel.add(addTeamButton);
         buttonPanel.add(validateTeamsButton);
         return buttonPanel;
+    }
+
+    private void styleButton(JButton button) {
+        button.setBackground(new Color(60, 179, 113));
+        button.setForeground(Color.WHITE);
+        button.setFont(new Font("Arial", Font.BOLD, 14));
+        button.setPreferredSize(new Dimension(150, 40));
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createRaisedBevelBorder());
+
+        button.setRolloverEnabled(true);
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(new Color(46, 139, 87));
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(new Color(60, 179, 113));
+            }
+        });
     }
 
     private void handleAddTeam() {
@@ -131,7 +173,7 @@ public class TeamManagementPanel extends JPanel implements IObserver {
             addTeamButton.setEnabled(false);
             validateTeamsButton.setEnabled(false);
             
-            frame.navigateTo("MATCH_MANAGEMENT"); // Navigate after the dialog is closed
+            frame.navigateTo("MATCH_MANAGEMENT");
         } else {
             JOptionPane.showMessageDialog(
                 this,
@@ -143,22 +185,26 @@ public class TeamManagementPanel extends JPanel implements IObserver {
     }
 
     private void refreshTeamList() {
-        teamList.setListData(getTeamNames());
-        if(AppContext.getCurrentTournament().getStatus()==0){
-          // System.out.println("in team managm "+ AppContext.getCurrentTournament());
-           addTeamButton.setEnabled(true);
-           validateTeamsButton.setEnabled(true);
+        DefaultTableModel model = (DefaultTableModel) teamTable.getModel();
+        model.setRowCount(0);  // Clear existing rows
+
+        List<Equipe> teams = getTeamsWithNumbers();
+        for (Equipe team : teams) {
+            model.addRow(new Object[]{team.getNumber(), team.getJoueur1(), team.getJoueur2()});
         }
-        else {
+
+        if (AppContext.getCurrentTournament().getStatus() == 0) {
+            addTeamButton.setEnabled(true);
+            validateTeamsButton.setEnabled(true);
+        } else {
             addTeamButton.setEnabled(false);
             validateTeamsButton.setEnabled(false);
         }
     }
 
-    private String[] getTeamNames() {
+    private List<Equipe> getTeamsWithNumbers() {
         EquipeDAO dao = FactoryDAO.getEquipeDAO();
-        List<Equipe> teams = dao.getByTournoi(AppContext.getCurrentTournament().getId());
-        return teams.stream().map(Equipe::getPlayers).toArray(String[]::new);
+        return dao.getByTournoi(AppContext.getCurrentTournament().getId());
     }
 
     @Override

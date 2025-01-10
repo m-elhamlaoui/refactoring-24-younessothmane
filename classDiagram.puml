@@ -1,0 +1,206 @@
+@startuml
+' Title
+title UML Class Diagram for Tournament Management System
+
+' Packages
+left to right direction
+
+package "Models" as M {
+    class Equipe {
+        - id: int
+        - number: int
+        - tournoi: int
+        - joueur1: String
+        - joueur2: String
+        + getters/setters
+    }
+
+    class Match {
+        - id: int
+        - tournoi: int
+        - numTour: int
+        - eq1: int
+        - eq2: int
+        - score1: int
+        - score2: int
+        - termine: boolean
+        + getters/setters
+    }
+
+    class Tournoi {
+        - id: int
+        - name: String
+        - numberMatch: int
+        - status: int
+        + getters/setters
+    }
+}
+
+package "Persistence" as P {
+    interface IRowMapper<T> {
+        + mapRow(rs: ResultSet, rowNum: int): T
+    }
+
+    class EquipeMapper implements IRowMapper<Equipe> {
+    }
+
+    class MatchMapper implements IRowMapper<Match> {
+    }
+
+    class TournoiMapper implements IRowMapper<Tournoi> {
+    }
+
+    class JDBCTemplate {
+        - connector: Connection
+        + Query(query: String): void
+        + Query<T>(query: String, mapper: IRowMapper<T>): List<T>
+    }
+
+    class Connector {
+        + getConnection(): Connection
+    }
+}
+
+package "DAO" as D {
+    interface IDAO<T> {
+        + add(obj: T): void
+        + delete(id: int): void
+        + getOne(id: int): T
+        + getAll(): List<T>
+        + update(obj: T): void
+    }
+
+    abstract class AbstractDAO<T> implements IDAO<T> {
+        - jdbcTemplate: JDBCTemplate
+    }
+
+    class MatchDAO extends AbstractDAO<Match> {
+        + getMatchsByTournoi(id: int): List<Match>
+    }
+
+    class EquipeDAO extends AbstractDAO<Equipe> {
+        + getByTournoi(id: int): List<Equipe>
+    }
+
+    class TournoiDAO extends AbstractDAO<Tournoi> {
+        + getTournoiNames(): Vector<String>
+    }
+
+    class FactoryDAO {
+        + getMatchDAO(): MatchDAO
+        + getEquipeDAO(): EquipeDAO
+        + getTournoiDAO(): TournoiDAO
+    }
+}
+
+package "Strategy" as S {
+    interface IButtonStrategy {
+        + execute(): void
+    }
+
+    class AddMatchScoresStrategy implements IButtonStrategy {
+    }
+
+    class AddTeamStrategy implements IButtonStrategy {
+    }
+
+    class CreateTournamentStrategy implements IButtonStrategy {
+    }
+
+    class DeleteTournamentStrategy implements IButtonStrategy {
+    }
+
+    class SelectTournamentStrategy implements IButtonStrategy {
+    }
+
+    class ValidateTeamsStrategy implements IButtonStrategy {
+    }
+}
+
+package "Views" as V {
+    class MainFrame {
+        - cardLayout: CardLayout
+        + navigateTo(panelName: String): void
+    }
+
+    class TournamentSelectionPanel {
+    }
+
+    class MatchManagementPanel {
+    }
+
+    class TeamManagementPanel {
+    }
+
+    class RoundManagementPanel {
+    }
+
+    class ResultManagementPanel {
+    }
+
+    class TournamentDetailsPanel {
+    }
+}
+
+package "Observer" as O {
+    interface IObserver {
+        + update(): void
+    }
+
+    class AppContext {
+        - observers: List<IObserver>
+        + addObserver(observer: IObserver): void
+        + removeObserver(observer: IObserver): void
+        + notifyObservers(): void
+        - currentTournament: Tournoi
+        + getCurrentTournament(): Tournoi
+        + setCurrentTournament(tournament: Tournoi): void
+    }
+}
+
+' Relationships between packages
+V --> S : Views invoke Strategies
+S --> D : Strategies use Repositories (DAOs)
+D --> M : DAOs manage Models
+
+' Observer Pattern
+O --> AppContext : AppContext manages IObservers
+AppContext --> IObserver : Registers and Notifies observers
+
+' Relationships
+EquipeMapper --> Equipe
+MatchMapper --> Match
+TournoiMapper --> Tournoi
+
+AbstractDAO <|-- MatchDAO
+AbstractDAO <|-- EquipeDAO
+AbstractDAO <|-- TournoiDAO
+
+FactoryDAO --> MatchDAO
+FactoryDAO --> EquipeDAO
+FactoryDAO --> TournoiDAO
+
+JDBCTemplate --> Connector
+JDBCTemplate --> IRowMapper
+
+IButtonStrategy <|-- AddMatchScoresStrategy
+IButtonStrategy <|-- AddTeamStrategy
+IButtonStrategy <|-- CreateTournamentStrategy
+IButtonStrategy <|-- DeleteTournamentStrategy
+IButtonStrategy <|-- SelectTournamentStrategy
+IButtonStrategy <|-- ValidateTeamsStrategy
+
+IObserver <|-- TournamentSelectionPanel
+IObserver <|-- MatchManagementPanel
+IObserver <|-- TeamManagementPanel
+IObserver <|-- RoundManagementPanel
+IObserver <|-- ResultManagementPanel
+IObserver <|-- TournamentDetailsPanel
+
+MainFrame --> TournamentSelectionPanel
+MainFrame --> MatchManagementPanel
+MainFrame --> TeamManagementPanel
+MainFrame --> RoundManagementPanel
+MainFrame --> ResultManagementPanel
+MainFrame --> TournamentDetailsPanel
+@enduml
